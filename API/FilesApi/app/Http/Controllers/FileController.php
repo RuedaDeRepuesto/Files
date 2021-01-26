@@ -9,6 +9,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\File;
 use App\Models\ErrorResponse;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class FileController extends Controller
 {
@@ -47,7 +48,88 @@ class FileController extends Controller
      */
     public function post(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file'
+        ]);
 
+        if($validator->fails())
+        {
+            return response()->json(ErrorResponse::fromValidator($validator), 422);
+        }
+
+        $user = auth()->user();
+        $file = $request->file('file');
+
+        //dd($file->get());
+
+        $fname = $file->getClientOriginalName();
+        $ext = $file->getClientOriginalExtension();
+
+        $storedFileName = uniqid().'_'.$fname;  
+             
+        $request->file->storeAs('archivos', $storedFileName);
+
+        $fileObj = new File();
+        $fileObj->filename = $fname;
+        $fileObj->extension = $ext;
+        $fileObj->desc = '';
+        $fileObj->mime = $file->getClientMimeType();
+        $fileObj->user_id = $user->id;
+        $fileObj->size = $file->getSize();
+        $fileObj->file = $storedFileName;
+    
+        $fileObj->save();
+
+        if(strpos($fileObj->mime,"image") !== false)
+        {
+            $img = Image::make(storage_path('app/archivos/'.$storedFileName));
+            $img->resize(64, 64);
+            $img->save(storage_path('app/previews/'.$storedFileName));
+        }
+        
+        
+        return response()->json($fileObj);
+    }
+    
+
+    /***
+     * getFile()
+     */
+
+    public function getFile(Request $request, int $id)
+    {
+        $file = File::find($id);
+        $file_path = storage_path('app/archivos/'.$file->file);
+        return response()->file($file_path);
+    }
+
+
+    /**
+     * delete borrar archivo.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(int $id)
+    {
+    
+        $file = File::find($id);
+        $name = $file->filename;
+        $file->delete();
+        return response()->json(['filename' => $name]);
+       
+    }
+
+
+    /**
+     * GET Preview real stream
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function preview(int $id)
+    {
+        $file = File::find($id);
+        $file_path = storage_path('app/previews/'.$file->file);
+        return response()->file($file_path);
     }
 
 }

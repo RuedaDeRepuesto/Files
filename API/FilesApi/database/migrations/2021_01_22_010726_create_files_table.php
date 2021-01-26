@@ -15,17 +15,18 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('filename',128);
             $table->string('extension',8);
-            $table->string('desc',512);
+            $table->string('desc',512)->nullable();
             $table->bigInteger('size');
             $table->string('mime',64);
-            $table->binary('file');
+            $table->string('file',256)->nullable();
             $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

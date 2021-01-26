@@ -1,0 +1,7 @@
+{
+  "name": "KFiles",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
