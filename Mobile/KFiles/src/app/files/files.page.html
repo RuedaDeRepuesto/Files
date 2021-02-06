@@ -1,6 +1,11 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title>Archivos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refresh()"><ion-icon name="refresh-circle-outline"></ion-icon></ion-button>
+      <ion-button (click)="filePicker.click()"><ion-icon name="add-circle-outline"></ion-icon></ion-button>
+      <input type="file" (change)="fileUpload($event)" id="archivo" #filePicker style="display: none;">
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,4 +16,25 @@
     </ion-toolbar>
   </ion-header>
 
+  <div class="files-container">
+    <div class="file-item" *ngFor="let i of files" >
+      <img  src="/assets/icons/{{i.extension}}.png"  class="file-icon" alt="" (click)="fileMenu($event,i)">
+      <h6 class="file-name">{{i.filename}}</h6>
+      <small class="file-size">{{i.size_mb}}</small>
+      
+    </div>
+  </div>
+
+  <div class="uploads-container">
+    <div class="upload appear_from_left" *ngFor="let u of uploads" >
+      <p>{{u.fileName}}</p>
+      <div class="progress-bar" *ngIf="u.uploading">
+        <div class="progress-inner" [style.width.%]="u.progress">
+
+        </div>
+      </div>
+      <p *ngIf="u.finished ">Subida terminada  <a class="btn"  (click)="removeUpload(u)">Ok</a></p>
+      <p *ngIf="u.error ">Error <a class="btn"  (click)="removeUpload(u)">Ok</a></p>
+    </div>
+  </div>
 </ion-content>

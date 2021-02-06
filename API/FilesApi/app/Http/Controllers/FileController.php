@@ -44,6 +44,31 @@ class FileController extends Controller
     }
 
     /**
+     * put()
+     */
+    public function put(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'filename' => 'required|string',
+            'id' => 'required|int'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json(ErrorResponse::fromValidator($validator), 422);
+        }
+
+        $user_id = auth()->user()->id;
+        $file = File::where('id',$request->get('id'))->where('user_id',$user_id)->first();
+
+        $file->filename = $request->get('filename');
+        $file->desc = $request->get('desc');
+        $file->save();
+
+        return response()->json($file);
+    }
+
+    /**
      * post()
      */
     public function post(Request $request)
@@ -98,7 +123,8 @@ class FileController extends Controller
 
     public function getFile(Request $request, int $id)
     {
-        $file = File::find($id);
+        $user_id = auth()->user()->id;
+        $file = File::where('id',$id)->where('user_id',$user_id)->first();
         $file_path = storage_path('app/archivos/'.$file->file);
         return response()->file($file_path);
     }
@@ -111,8 +137,8 @@ class FileController extends Controller
      */
     public function delete(int $id)
     {
-    
-        $file = File::find($id);
+        $user_id = auth()->user()->id;
+        $file = File::where('id',$id)->where('user_id',$user_id)->first();
         $name = $file->filename;
         $file->delete();
         return response()->json(['filename' => $name]);
@@ -127,7 +153,8 @@ class FileController extends Controller
      */
     public function preview(int $id)
     {
-        $file = File::find($id);
+        $user_id = auth()->user()->id;
+        $file = File::where('id',$id)->where('user_id',$user_id)->first();
         $file_path = storage_path('app/previews/'.$file->file);
         return response()->file($file_path);
     }

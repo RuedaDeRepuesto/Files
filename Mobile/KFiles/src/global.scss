@@ -24,3 +24,17 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+
+.appear_from_left{
+      position: relative;
+      animation: appear_from_left .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      left:0px;
+}
+
+@keyframes appear_from_left{
+      0%{
+            left:-99vw;
+      }
+}

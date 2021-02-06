@@ -1,0 +1,51 @@
+ion-content{
+      --background:none;
+      background-image: url('/assets/login.jpg');
+      background-position: center center;
+      background-size: cover;
+}
+
+.login-container
+{
+      position: absolute;
+      top:50%;
+      transform: translatey(-50%);
+      width: 100%;
+      animation: anim1 1s ease;
+}
+
+@keyframes anim1{
+      0%{
+            top:-200px;
+      }
+}
+
+.login-box
+{
+      background-color: #00000040;
+      backdrop-filter: blur(20px);
+      width: calc(100% - 2rem);
+      margin: 1rem;
+      padding: 1rem;
+      text-align: center;
+      color: white;
+      border-radius: 10px;
+}
+
+label
+{
+      text-align: center;
+      width: 100%;
+      
+}
+
+input{
+      margin: 0.5rem;
+      width: calc(100% - 1rem);
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      background-color: #00000030;
+      border: 1px solid transparent;
+      text-align: center;
+      color:white;
+}

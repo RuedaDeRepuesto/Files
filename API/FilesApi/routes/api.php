@@ -25,3 +25,4 @@ Route::get('file/{id}/file',[FileController::class,'getFile']);
 Route::get('file/{id}/preview',[FileController::class,'preview']);
 Route::delete('file/{id}',[FileController::class,'delete']);
 Route::post('file',  [FileController::class, 'post']);
+Route::put('file',  [FileController::class, 'put']);
